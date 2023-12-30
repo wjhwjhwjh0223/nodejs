@@ -39,6 +39,7 @@ router.post('/generalDelete', async (ctx) => {
         msg: '删除成功',
         data: res
     }
+    console.log(res)
 })
 
 router.post('/generalUpdate', async (ctx) => {
