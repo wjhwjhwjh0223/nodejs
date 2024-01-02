@@ -1,6 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
-import { Staff } from "./Staff"; // 引入员工实体
-import { Appointment } from "./Appointment";
+import { Entity, PrimaryGeneratedColumn, Column,CreateDateColumn, UpdateDateColumn} from "typeorm";
 
 @Entity()
 export class Service{

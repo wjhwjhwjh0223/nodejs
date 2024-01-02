@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn,  OneToMany, ManyToMany, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn,  OneToMany, ManyToMany, OneToOne ,Unique } from "typeorm";
 import { Activity } from "./Activity";
 import { Appointment } from "./Appointment";
 import { Notification } from "./Notification";
 import { HealthRecord } from "./HealthRecord";
 
+@Unique(["account"])
 @Entity()
 export class General {
     // 主键
@@ -18,10 +19,16 @@ export class General {
     name: string;
 
     @Column({
+        comment:'用户账号',
+        unique: true 
+    })
+    account:string
+
+    @Column({
         comment:"用户密码",
         default:123456
     })
-    password: number;
+    password: string;
     
     @Column({
         comment:'用户年龄'

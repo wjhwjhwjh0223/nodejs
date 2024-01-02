@@ -1,8 +1,9 @@
-import { ManyToMany,Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne, OneToOne,OneToMany } from "typeorm";
+import { ManyToMany,Entity, Unique,PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne, OneToOne,OneToMany } from "typeorm";
 import {Notification} from "./Notification"
 import { Appointment } from "./Appointment";
 import { EmergencyResponse } from "./EmergencyResponse";
 
+@Unique(["account"])
 @Entity()
 export class Staff{
 
@@ -12,10 +13,17 @@ export class Staff{
     id:number
 
     @Column({
+        comment:'用户账号',
+        unique: true 
+    })
+    account:string
+
+
+    @Column({
         comment:"用户密码",
         default:123456
     })
-    password: number;
+    password: string;
     
     @Column({
         comment:'员工姓名',

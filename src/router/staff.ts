@@ -71,4 +71,27 @@ router.post('/staffUpdate', async (ctx) => {
     }
   })
 
+  //工作人员登录
+  router.post('/staffLogin',async(ctx)=>{
+    let body = ctx.request.body
+    let res =await staffRepository.findOne({
+      where:{
+        account:body.account,
+        password:body.password
+      }
+    })
+    if (res) {
+      ctx.body = {
+        code: 1,
+        msg: '登录成功',
+        data: res
+      }
+    } else {
+      ctx.body = {
+        code: 0,
+        msg: '登陆失败,密码或账号错误'
+      }
+    }
+  })
+
 export const staffRoutes = router.routes();
