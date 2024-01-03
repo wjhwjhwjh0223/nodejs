@@ -31,6 +31,11 @@ export class General {
     password: string;
     
     @Column({
+        comment:"图片地址",
+    })
+    avatar:string
+
+    @Column({
         comment:'用户年龄'
     })
     age: number;
@@ -41,7 +46,8 @@ export class General {
     sex:number
 
     @Column({
-        comment:'电话'
+        comment:'电话',
+        type: 'varchar'
     })
     phone:string
 

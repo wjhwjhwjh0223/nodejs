@@ -26,6 +26,11 @@ export class Staff{
     password: string;
     
     @Column({
+        comment:"图片地址",
+    })
+    avatar:string
+
+    @Column({
         comment:'员工姓名',
     })
     name:string
@@ -42,8 +47,9 @@ export class Staff{
 
     @Column({
         comment:'员工手机号',
+        type: 'varchar'
     })
-    phone:number
+    phone:string
 
     @Column({
         comment:'员工地址',
