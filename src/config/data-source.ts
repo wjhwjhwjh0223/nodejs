@@ -19,7 +19,7 @@ export const AppDataSource = new DataSource({
   password: "123456",
   database: "old",
   synchronize: true,
-  // logging: true,
+  logging: true,
   entities: [ Activity, General, Staff,HealthRecord,Service,Appointment,Feedback,Notification,EmergencyResponse,User],
   migrations: [],
   subscribers: [],

@@ -28,4 +28,36 @@ let userRepository=AppDataSource.getRepository(User)
       }
     }
   })
+
+  //管理员修改密码
+  router.post('/userChangePassWord',async(ctx)=>{
+    let body=ctx.request.body
+    let res=await userRepository.findOne({
+      where:{
+       id:body.id || '',
+       password:body.password || ''
+      }
+    })
+    console.log(res)
+    if(res){
+      ctx.body={
+        code:1,
+        msg:'有此用户',
+        data:res
+      }
+      let newPassWord=body.newPass
+      res.password = newPassWord;
+      await userRepository.save(res);
+      ctx.body = {
+        code: 1,
+        msg: '密码修改成功',
+        data: res
+      };
+    }else{
+      ctx.body={
+        code:0,
+        msg:'密码错误'
+      }
+    }
+  })
 export const userRoutes = router.routes();

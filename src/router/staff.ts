@@ -16,6 +16,9 @@ router.get('/staff', async (ctx) => {
         where: {
             name: Like(`${query.name}%`)
         },
+        order:{
+          ctime:'DESC'
+        },
         skip: (pagenumber - 1) * pagesize,
         take: pagesize
     })
@@ -55,7 +58,6 @@ router.post('/staffUpdate', async (ctx) => {
   })
 
   //增加
-  
   router.post('/staffAdd', async (ctx) => {
     //1.接受参数
     let body = ctx.request.body

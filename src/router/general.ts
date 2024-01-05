@@ -16,6 +16,9 @@ router.get('/general', async (ctx) => {
     where: {
       name: Like(`${query.name}%`)
     },
+    order:{
+      utime:"DESC"
+    },
     skip: (pagenumber - 1) * pagesize,
     take: pagesize
   }
