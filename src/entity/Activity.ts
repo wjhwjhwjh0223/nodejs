@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn,  OneToOne, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column,JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne, ManyToMany, JoinTable, ManyToOne } from "typeorm";
 import { General } from "./General";
 import { Staff } from "./Staff";
+
+
 
 @Entity()
 export class Activity {
@@ -9,12 +11,10 @@ export class Activity {
     })
     id: number;
 
-
     @Column({
         comment: '活动名称'
     })
     name: string;
-
 
     @Column({
         comment: '活动描述'
@@ -22,6 +22,7 @@ export class Activity {
     description: string;
 
     @Column({
+        type: 'datetime',
         comment: '活动时间'
     })
     time: Date;
@@ -29,12 +30,29 @@ export class Activity {
     @Column({
         comment: '活动地点'
     })
-    location: string
+    location: string;
+
+    @ManyToOne(() => Staff, staff => staff.activities)
+    @JoinColumn({ name: "staffId" }) // 在Activity表中创建一个staffId的外键列
+    staff: Staff;
 
     @Column({
+        comment: '活动类型'
+    })
+    activityType: String;
+
+    @Column({
+        default: '计划中',
         comment: '活动状态'
     })
-    status: number;
+    status: string;
+
+    @Column({
+        type: 'int',
+        default: 0,
+        comment: '参与人数'
+    })
+    participantCount: number;
 
 
     @CreateDateColumn()
@@ -43,20 +61,16 @@ export class Activity {
     @UpdateDateColumn()
     utime: Date;
 
-    //一个活动可以多个普通用户参加
-    @ManyToMany(()=>General,general=>general.activity)
+    @ManyToMany(() => General, general => general.activity)
     @JoinTable()
-    general:General[];
+    general: General[];
+    activity: Staff[];
 
-    //一个活动只有一个负责人
-    @OneToOne(()=>Staff,{
-        cascade:true //级联保存
-    })
-    staff:Staff;
-     
-    constructor(obj:any) {
-        if(obj) {
-          Object.assign(this, obj)
+ 
+
+    constructor(obj: any) {
+        if (obj) {
+          Object.assign(this, obj);
         }
-      }
+    }
 }
