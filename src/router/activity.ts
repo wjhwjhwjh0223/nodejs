@@ -28,4 +28,20 @@ router.post('/activitycreat', async (ctx) => {
     }
 })
 
+//获取活动列表
+router.get('/getactivityList',async (ctx)=>{
+    let query = ctx.query
+    let res =await activityRepository.findAndCount({
+        relations:['staff']
+    })
+    ctx.body = {
+        code: 1,
+        msg: '获取成功',
+        data: {
+            list: res[0],
+            total: res[1]
+        }
+    }
+})
+
 export const activityRoutes = router.routes();
