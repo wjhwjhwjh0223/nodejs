@@ -1,9 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn,  OneToMany, ManyToMany, OneToOne ,Unique } from "typeorm";
-import { Activity } from "./Activity";
 import { Appointment } from "./Appointment";
 import { Notification } from "./Notification";
 import { HealthRecord } from "./HealthRecord";
-
+import { ActivityGeneral } from "./ActivityGeneral";
 @Unique(["account"])
 @Entity()
 export class General {
@@ -76,12 +75,16 @@ export class General {
     @ManyToMany(()=>Notification)
     notifications: Notification[];
 
+    
+    @OneToMany(()=>ActivityGeneral,activityGeneral=>activityGeneral.general)
+    activityGeneral:ActivityGeneral[]
 
-    //多个普通人员对应多个活动
-    @ManyToMany(()=>Activity,activity=>activity.general,{
-        cascade:true
-    })
-    activity:Activity[]
+
+    // //多个普通人员对应多个活动
+    // @ManyToMany(()=>Activity,activity=>activity.general,{
+    //     cascade:true
+    // })
+    // activity:Activity[]
    
 
     //一个普通人员对应多个预约

@@ -10,6 +10,7 @@ import { Feedback } from "../entity/Feedback";
 import { Notification } from "../entity/Notification";
 import { EmergencyResponse } from "../entity/EmergencyResponse";
 import { User } from "../entity/User";
+import { ActivityGeneral } from "../entity/ActivityGeneral";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -20,7 +21,7 @@ export const AppDataSource = new DataSource({
   database: "old",
   synchronize: true,
   //logging: true,
-  entities: [ Activity, General, Staff,HealthRecord,Service,Appointment,Feedback,Notification,EmergencyResponse,User],
+  entities: [ActivityGeneral, Activity, General, Staff,HealthRecord,Service,Appointment,Feedback,Notification,EmergencyResponse,User],
   migrations: [],
   subscribers: [],
   poolSize: 10,

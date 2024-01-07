@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column,JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne, ManyToMany, JoinTable, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column,JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne, ManyToMany, JoinTable, ManyToOne, OneToMany } from "typeorm";
 import { General } from "./General";
 import { Staff } from "./Staff";
+import { ActivityGeneral } from "./ActivityGeneral";
+import { activityRoutes } from "../router/activity";
 
 
 
@@ -36,6 +38,9 @@ export class Activity {
     @JoinColumn({ name: "staffId" }) // 在Activity表中创建一个staffId的外键列
     staff: Staff;
 
+    @OneToMany(() => ActivityGeneral, activityGeneral => activityGeneral.activity)
+    activityGeneral: ActivityGeneral[];
+
     @Column({
         comment: '活动类型'
     })
@@ -61,12 +66,8 @@ export class Activity {
     @UpdateDateColumn()
     utime: Date;
 
-    @ManyToMany(() => General, general => general.activity)
-    @JoinTable()
-    general: General[];
-    activity: Staff[];
-
  
+    
 
     constructor(obj: any) {
         if (obj) {
