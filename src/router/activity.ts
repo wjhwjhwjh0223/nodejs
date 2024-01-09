@@ -100,9 +100,7 @@ router.get('/user/activity', async (ctx) => {
     const id = ctx.query.id
     const res = await activityGeneralRepository.findAndCount({
         where: {
-            general: {
-                id: id
-            }
+            general: { id:id } 
         },
         relations: ['activity', 'general']
     })
@@ -113,6 +111,24 @@ router.get('/user/activity', async (ctx) => {
             list: res[0],
             total: res[1]
         }
+    }
+})
+
+//退出活动
+router.post('/activityExit' ,async(ctx)=>{
+    let body = ctx.request.body
+    let res = await activityGeneralRepository.findOne({
+        where: { 
+            general: { id: body.generalId },
+            activity: { id: body.activityId }
+          }
+    })
+    console.log(res)
+    let res1 = await activityGeneralRepository.delete(res.id)
+    ctx.body = {
+        code: 1,
+        msg: '退出成功',
+        data:res1
     }
 })
 
