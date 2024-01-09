@@ -95,5 +95,26 @@ router.post('/participate-activity', async (ctx) => {
     ctx.body = { code: 1, msg: '活动参加成功！' };
 });
 
+//查询个人参加的活动列表
+router.get('/user/activity', async (ctx) => {
+    const id = ctx.query.id
+    const res = await activityGeneralRepository.findAndCount({
+        where: {
+            general: {
+                id: id
+            }
+        },
+        relations: ['activity', 'general']
+    })
+    ctx.body = {
+        code: 1,
+        msg: '获取成功',
+        data: {
+            list: res[0],
+            total: res[1]
+        }
+    }
+})
+
 
 export const activityRoutes = router.routes();
