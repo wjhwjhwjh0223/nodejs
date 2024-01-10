@@ -4,12 +4,14 @@ import { generalRoutes } from './general';
 import { staffRoutes } from './staff'
 import {userRoutes} from './user'
 import {activityRoutes} from './activity'
+import {appointmentserviceRoutes} from './appointmentservice'
 const router = new Router()
 router.use(staffRoutes)
 router.use(generalRoutes)
 router.use(fileRoutes)
 router.use(userRoutes)
 router.use(activityRoutes)
+router.use(appointmentserviceRoutes)
 export {
   router
 }

@@ -24,15 +24,18 @@ export class AppointmentService {
     staff:Staff;
     
     @Column({
-        type: 'datetime',
+        type: 'datetime', // 指定列类型为 datetime
+        nullable: false, // 设定此字段为非空
         comment: '预约时间'
     })
     appointmentTime: Date;
 
     @Column({
-        comment: '预约状态（如：待确认、已确认、已取消）'
-    })
-    status: string;
+        comment: '预约状态（如：待确认、已确认、已取消 已完成）',
+        default: '待确认' // 默认状态为待确认
+      })
+      status: string;
+      
 
     @CreateDateColumn()
     ctime: Date; // 创建时间
@@ -41,7 +44,7 @@ export class AppointmentService {
     utime: Date; // 更新时间
 
     @Column({
-        comment: '服务类型（如：医疗、家政等）'
+        comment: '服务类型'
     })
     serviceType: string;
 
@@ -56,6 +59,7 @@ export class AppointmentService {
     })
     userFeedback: string;
 
+
     @Column({
         comment: '取消原因',
         nullable: true
@@ -64,7 +68,7 @@ export class AppointmentService {
 
     @Column({
         comment: '特殊要求',
-        nullable: true
+        default:'无',
     })
     specialRequirements: string;
     constructor(obj: any) {
