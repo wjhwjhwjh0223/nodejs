@@ -1,6 +1,6 @@
 import { ManyToMany,Entity, Unique,PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne, OneToOne,OneToMany } from "typeorm";
 import {Notification} from "./Notification"
-import { AppointmentService } from "./Appointment";
+import { AppointmentService } from "./AppointmentService";
 import { EmergencyResponse } from "./EmergencyResponse";
 import { Activity } from "./Activity";
 

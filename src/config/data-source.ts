@@ -4,7 +4,7 @@ import { Activity } from "../entity/Activity";
 import { General } from "../entity/General";
 import { Staff } from "../entity/Staff";
 import { HealthRecord } from "../entity/HealthRecord";
-import { AppointmentService } from "../entity/Appointment";
+import { AppointmentService } from "../entity/AppointmentService";
 import { Feedback } from "../entity/Feedback";
 import { Notification } from "../entity/Notification";
 import { EmergencyResponse } from "../entity/EmergencyResponse";

@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column,  JoinColumn, CreateDateColumn ,UpdateDateColumn, OneToOne} from "typeorm";
 import { Activity } from "./Activity";
-import { AppointmentService } from "./Appointment";
+import { AppointmentService } from "./AppointmentService";
 @Entity()
 export class Feedback {
     @PrimaryGeneratedColumn({

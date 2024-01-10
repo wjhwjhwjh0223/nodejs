@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn,  OneToMany, ManyToMany, OneToOne ,Unique } from "typeorm";
-import { AppointmentService } from "./Appointment";
+import { AppointmentService } from "./AppointmentService";
 import { Notification } from "./Notification";
 import { HealthRecord } from "./HealthRecord";
 import { ActivityGeneral } from "./ActivityGeneral";
