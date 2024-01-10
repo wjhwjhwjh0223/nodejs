@@ -4,8 +4,7 @@ import { Activity } from "../entity/Activity";
 import { General } from "../entity/General";
 import { Staff } from "../entity/Staff";
 import { HealthRecord } from "../entity/HealthRecord";
-import { Service } from "../entity/Service";
-import { Appointment } from "../entity/Appointment";
+import { AppointmentService } from "../entity/Appointment";
 import { Feedback } from "../entity/Feedback";
 import { Notification } from "../entity/Notification";
 import { EmergencyResponse } from "../entity/EmergencyResponse";
@@ -21,7 +20,7 @@ export const AppDataSource = new DataSource({
   database: "old",
   synchronize: true,
   //logging: true,
-  entities: [ActivityGeneral, Activity, General, Staff,HealthRecord,Service,Appointment,Feedback,Notification,EmergencyResponse,User],
+  entities: [ActivityGeneral, Activity, General, Staff,HealthRecord,AppointmentService,Feedback,Notification,EmergencyResponse,User],
   migrations: [],
   subscribers: [],
   poolSize: 10,

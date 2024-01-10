@@ -1,6 +1,6 @@
 import { ManyToMany,Entity, Unique,PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne, OneToOne,OneToMany } from "typeorm";
 import {Notification} from "./Notification"
-import { Appointment } from "./Appointment";
+import { AppointmentService } from "./Appointment";
 import { EmergencyResponse } from "./EmergencyResponse";
 import { Activity } from "./Activity";
 
@@ -67,10 +67,10 @@ export class Staff{
     notifications: Notification[];
 
     //一个员工对应多个预约
-    @OneToMany(()=>Appointment,appointment=>appointment.staff,{
+    @OneToMany(()=>AppointmentService,appointment=>appointment.staff,{
         cascade:true
     })
-    appointments:Appointment[]
+    appointments:AppointmentService[]
 
     @OneToMany(() => Activity, activity => activity.staff)
     activities: Activity[];

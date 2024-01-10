@@ -1,11 +1,11 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from "typeorm";
 
-import { Service } from "./Service"; // 引入服务实体
+
 import { General } from "./General";
 import { Staff } from "./Staff";
 
 @Entity()
-export class Appointment {
+export class AppointmentService {
 
     @PrimaryGeneratedColumn({
         comment: '主键,预约ID'
@@ -23,13 +23,6 @@ export class Appointment {
     @JoinColumn()
     staff:Staff;
     
-    //一个预约对应一个服务
-    @OneToOne(()=>Service, {
-        cascade:true
-    })
-    @JoinColumn()
-    service:Service;
-
     @Column({
         type: 'datetime',
         comment: '预约时间'

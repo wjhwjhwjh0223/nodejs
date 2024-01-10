@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column,  JoinColumn, CreateDateColumn ,UpdateDateColumn, OneToOne} from "typeorm";
-import { Service } from "./Service";
 import { Activity } from "./Activity";
+import { AppointmentService } from "./Appointment";
 @Entity()
 export class Feedback {
     @PrimaryGeneratedColumn({
@@ -30,14 +30,15 @@ export class Feedback {
     @UpdateDateColumn()
     utime: Date;
 
-    //一个评价对应一个服务
+    //一个评价对应一个预约服务
     @JoinColumn()
-    @OneToOne(()=>Service,{
+    @OneToOne(()=>AppointmentService,{
         cascade:true
     })
-    service:Service;
+    appointment:AppointmentService;
 
     //一个评价对应一个活动
+    @JoinColumn()
     @OneToOne(()=>Activity,{
         cascade:true
     })

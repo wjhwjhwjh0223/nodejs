@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, JoinColumn,  OneToMany, ManyToMany, OneToOne ,Unique } from "typeorm";
-import { Appointment } from "./Appointment";
+import { AppointmentService } from "./Appointment";
 import { Notification } from "./Notification";
 import { HealthRecord } from "./HealthRecord";
 import { ActivityGeneral } from "./ActivityGeneral";
@@ -88,10 +88,10 @@ export class General {
    
 
     //一个普通人员对应多个预约
-    @OneToMany(()=>Appointment,appointment=>appointment.general,{
+    @OneToMany(()=>AppointmentService,appointment=>appointment.general,{
         cascade:true
     })
-    appointments:Appointment[]
+    appointments:AppointmentService[]
 
     
     constructor(obj:any) {
