@@ -40,6 +40,33 @@ export class AppointmentService {
     @UpdateDateColumn()
     utime: Date; // 更新时间
 
+    @Column({
+        comment: '服务类型（如：医疗、家政等）'
+    })
+    serviceType: string;
+
+    @Column({
+        comment: '服务描述'
+    })
+    serviceDescription: string;
+
+    @Column({
+        comment: '用户反馈或评价',
+        nullable: true
+    })
+    userFeedback: string;
+
+    @Column({
+        comment: '取消原因',
+        nullable: true
+    })
+    cancellationReason: string;
+
+    @Column({
+        comment: '特殊要求',
+        nullable: true
+    })
+    specialRequirements: string;
     constructor(obj: any) {
         if (obj) {
             Object.assign(this, obj);
