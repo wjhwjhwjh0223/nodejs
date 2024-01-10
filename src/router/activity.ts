@@ -132,5 +132,25 @@ router.post('/activityExit' ,async(ctx)=>{
     }
 })
 
+//获取参加活动的名单
+router.get('/obtainTheListOfParticipantsInTheEvent',async(ctx)=>{
+    let query = ctx.query
+    console.log(query)
+    let res = await activityGeneralRepository.findAndCount({
+        where:{
+            activity: { id: query.activityId }
+        },
+        relations:['general']
+    })
+    console.log(res)
+    ctx.body={
+        code:1,
+        msg:'获取成功',
+        data:{
+            list:res[0],
+            total:res[1]
+        }
+    }
+})
 
 export const activityRoutes = router.routes();
