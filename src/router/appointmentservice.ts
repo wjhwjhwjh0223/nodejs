@@ -2,19 +2,21 @@ import Router from 'koa-router'
 import { AppDataSource } from '../config/data-source'
 import { AppointmentService } from '../entity/AppointmentService'
 import { General } from '../entity/General'
+import { relative } from 'path'
 let router = new Router()
 let appointmentserviceRepository = AppDataSource.getRepository(AppointmentService)
 let generalRepository = AppDataSource.getRepository(General)
 //预约服务创建
 router.post('/appointmentServiceCreation', async (ctx) => {
     let body = ctx.request.body
-    console.log(body)
+    console.log(body, '~~~~~~~~~~~~~')
     let appointmentserviceData = { ...body }
     let appointmentservice = await generalRepository.findOne({
         where: {
-            id: body.id
+            id: body.generalId
         }
     })
+    console.log(appointmentservice)
     appointmentserviceData.general = appointmentservice
     let appointmentservice1 = new AppointmentService(appointmentserviceData)
     let res = await appointmentserviceRepository.save(appointmentservice1)
@@ -32,7 +34,7 @@ router.get('/getAListOfPersonalAppointmentServices', async (ctx) => {
         where: {
             general: { id: id }
         },
-        relations: ['general']
+        relations: ['general','staff']
     })
     ctx.body = {
         code: 1,
@@ -77,15 +79,17 @@ router.post('/cancelReservationService', async (ctx) => {
     }
 });
 
+//获取审核列表
 router.get('/getappointmentList', async (ctx) => {
     let query = ctx.query
     console.log(query)
     let res = await appointmentserviceRepository.findAndCount({
+        relations: ['general']
     })
     console.log(res)
     ctx.body = {
         code: 1,
-        msg:'获取成功',
+        msg: '获取成功',
         data: {
             list: res[0],
             total: res[1]
@@ -93,5 +97,49 @@ router.get('/getappointmentList', async (ctx) => {
     }
 })
 
+//更新服务状态
+router.post('/auditServices', async (ctx) => {
+    let body = ctx.request.body;
+    let service = new AppointmentService(body)
+    let res = await appointmentserviceRepository.save(service)
+    ctx.body = {
+        code: 1,
+        msg: '更新成功',
+        data: res
+    }
+})
+
+//工作人员查看自己的服务列表
+router.get('/staffViewServiceList', async (ctx) => {
+    const id = ctx.query.id
+    const res = await appointmentserviceRepository.findAndCount({
+        where: {
+            staff: { id: id }
+        },
+        relations: ['general']
+    })
+    ctx.body = {
+        code: 1,
+        msg: '获取成功',
+        data: {
+            list: res[0],
+            total: res[1]
+        }
+    }
+
+
+   
+})
+ //关闭服务
+ router.post('/closeService', async(ctx)=>{
+    let body = ctx.request.body
+    console.log(body)
+    let res = await appointmentserviceRepository.delete(body.id)
+    ctx.body={
+        code:1,
+        msg:'删除成功',
+        data :res 
+    }
+})
 
 export const appointmentserviceRoutes = router.routes();
