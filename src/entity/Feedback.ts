@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column,  JoinColumn, CreateDateColumn ,UpdateDateColumn, OneToOne} from "typeorm";
-import { Activity } from "./Activity";
+import { Entity, PrimaryGeneratedColumn, Column,  JoinColumn, CreateDateColumn ,UpdateDateColumn, OneToOne, ManyToOne} from "typeorm";
+
+import { Staff } from "./Staff";
 import { AppointmentService } from "./AppointmentService";
 @Entity()
 export class Feedback {
@@ -11,7 +12,7 @@ export class Feedback {
     @Column({
         comment: '评分'
     })
-    rating: number;
+    rating: string;
 
     @Column({
         type: "text",
@@ -19,10 +20,8 @@ export class Feedback {
     })
     comment: string;
 
-    @CreateDateColumn({
-        comment: '评价时间'
-    })
-    createdAt: Date;
+    @ManyToOne(()=>Staff)
+    staff:Staff
 
     @CreateDateColumn()
     ctime: Date;
@@ -30,17 +29,15 @@ export class Feedback {
     @UpdateDateColumn()
     utime: Date;
 
-    //一个评价对应一个预约服务
-    @JoinColumn()
-    @OneToOne(()=>AppointmentService,{
-        cascade:true
-    })
-    appointment:AppointmentService;
+    // @JoinColumn()
+    // @OneToOne(() => AppointmentService, {cascade: true})
+    // appointmentService: AppointmentService
 
-    //一个评价对应一个活动
-    @JoinColumn()
-    @OneToOne(()=>Activity,{
-        cascade:true
-    })
-    activity:Activity;
+    constructor(obj: Partial<Feedback>) {
+        if (obj) {
+            Object.assign(this, obj);
+        }
+    }
+
+
 }

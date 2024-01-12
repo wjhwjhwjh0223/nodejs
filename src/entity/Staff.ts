@@ -3,6 +3,7 @@ import {Notification} from "./Notification"
 import { AppointmentService } from "./AppointmentService";
 import { EmergencyResponse } from "./EmergencyResponse";
 import { Activity } from "./Activity";
+import { Feedback } from "./Feedback";
 
 @Unique(["account"])
 @Entity()
@@ -71,17 +72,24 @@ export class Staff{
         cascade:true
     })
     appointments:AppointmentService[]
-
-    @OneToMany(() => Activity, activity => activity.staff)
+    //一个员工对赢多个活动
+    @OneToMany(() => Activity, activity => activity.staff,{
+        cascade:true
+    })
     activities: Activity[];
 
-    
+    @JoinColumn()
+    @OneToMany(()=>Feedback,feeback=>feeback.staff,{
+        cascade:true
+    })
+    feedbacks:Feedback[]
+
     //多个员工对应一个紧急事件
     @ManyToOne(()=>EmergencyResponse)
     @JoinColumn()
     emergencyResponse:EmergencyResponse
 
-    constructor(obj:any) {
+    constructor(obj:Partial<Staff>) {
         if(obj) {
           Object.assign(this, obj)
         }

@@ -2,10 +2,13 @@ import Router from 'koa-router'
 import { AppDataSource } from '../config/data-source'
 import { AppointmentService } from '../entity/AppointmentService'
 import { General } from '../entity/General'
+import { Feedback } from '../entity/Feedback'
 import { relative } from 'path'
+import { Staff } from '../entity/Staff'
 let router = new Router()
 let appointmentserviceRepository = AppDataSource.getRepository(AppointmentService)
 let generalRepository = AppDataSource.getRepository(General)
+let feedbackRepository = AppDataSource.getRepository(Feedback)
 //预约服务创建
 router.post('/appointmentServiceCreation', async (ctx) => {
     let body = ctx.request.body
@@ -34,13 +37,19 @@ router.get('/getAListOfPersonalAppointmentServices', async (ctx) => {
         where: {
             general: { id: id }
         },
-        relations: ['general','staff']
+        relations: ['general', 'staff','feedback']
     })
+    const listWithFeedbackStatus = res[0].map(appointment => {
+        return {
+            ...appointment,
+            hasFeedback: !!appointment.feedback
+        };
+    });
     ctx.body = {
         code: 1,
         msg: '获取成功',
         data: {
-            list: res[0],
+            list: listWithFeedbackStatus,
             total: res[1]
         }
     }
@@ -100,6 +109,7 @@ router.get('/getappointmentList', async (ctx) => {
 //更新服务状态
 router.post('/auditServices', async (ctx) => {
     let body = ctx.request.body;
+    console.log(body)
     let service = new AppointmentService(body)
     let res = await appointmentserviceRepository.save(service)
     ctx.body = {
@@ -128,18 +138,63 @@ router.get('/staffViewServiceList', async (ctx) => {
     }
 
 
-   
+
 })
- //关闭服务
- router.post('/closeService', async(ctx)=>{
+//关闭服务
+router.post('/closeService', async (ctx) => {
     let body = ctx.request.body
     console.log(body)
     let res = await appointmentserviceRepository.delete(body.id)
-    ctx.body={
-        code:1,
-        msg:'删除成功',
-        data :res 
+    ctx.body = {
+        code: 1,
+        msg: '删除成功',
+        data: res
     }
 })
+
+
+
+//评价预约服务
+router.post('/evaluationServices', async (ctx) => {
+     let body = ctx.request.body;
+    // 掐断的数据
+    // const body = {
+    //     staffId: 1,
+    //     appointmentServiceId: 1,
+    //     feedback: {
+    //         rating: '5',
+    //         comment: '服务非常棒！'
+    //     }
+    // }
+    console.log(body)
+    // 构建用户
+    const staff = new Staff({
+        id: body.staffId
+    })
+    // 构建服务
+    const appointmentService = new AppointmentService({
+        id: body.appointmentServiceId,
+        status:"已评价"
+    })
+
+    // 构建评价
+    const feedback = new Feedback(body.feedback)
+    feedback.staff = staff
+    // 服务和评价关联
+    appointmentService.feedback = feedback
+
+    const res = await feedbackRepository.save(feedback)
+    // console.log(res)
+    appointmentService.feedback = res
+    console.log(appointmentService)
+    const res1 = await appointmentserviceRepository.save(appointmentService)
+    console.log(res1, '~~~~~~~~~~')
+    ctx.body = {
+        code: 1,
+        msg: '评价成功',
+        data: res
+    };
+});
+
 
 export const appointmentserviceRoutes = router.routes();

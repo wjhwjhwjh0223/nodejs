@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDa
 
 import { General } from "./General";
 import { Staff } from "./Staff";
+import { Feedback } from "./Feedback";
 
 @Entity()
 export class AppointmentService {
@@ -53,11 +54,9 @@ export class AppointmentService {
     })
     serviceDescription: string;
 
-    @Column({
-        comment: '用户反馈或评价',
-        nullable: true
-    })
-    userFeedback: string;
+    @JoinColumn()
+    @OneToOne(()=>Feedback,{cascade:true})
+    feedback:Feedback;
 
 
     @Column({
@@ -71,7 +70,7 @@ export class AppointmentService {
         default:'无',
     })
     specialRequirements: string;
-    constructor(obj: any) {
+    constructor(obj: Partial<AppointmentService>) {
         if (obj) {
             Object.assign(this, obj);
         }

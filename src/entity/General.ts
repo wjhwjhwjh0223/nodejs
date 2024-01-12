@@ -79,12 +79,6 @@ export class General {
     @OneToMany(()=>ActivityGeneral,activityGeneral=>activityGeneral.general)
     activityGeneral:ActivityGeneral[]
 
-
-    // //多个普通人员对应多个活动
-    // @ManyToMany(()=>Activity,activity=>activity.general,{
-    //     cascade:true
-    // })
-    // activity:Activity[]
    
 
     //一个普通人员对应多个预约
