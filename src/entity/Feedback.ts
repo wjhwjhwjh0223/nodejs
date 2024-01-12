@@ -12,7 +12,7 @@ export class Feedback {
     @Column({
         comment: '评分'
     })
-    rating: string;
+    rating: number;
 
     @Column({
         type: "text",

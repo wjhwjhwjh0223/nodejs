@@ -58,6 +58,7 @@ router.get('/getAListOfPersonalAppointmentServices', async (ctx) => {
 // 取消预约
 router.post('/cancelReservationService', async (ctx) => {
     let body = ctx.request.body;
+    console.log(body)
     try {
         // 根据ID查找预约服务
         let appointment = await appointmentserviceRepository.findOne({
@@ -67,11 +68,12 @@ router.post('/cancelReservationService', async (ctx) => {
         if (appointment) {
             // 更新预约状态为已取消
             appointment.status = '已取消';
+            appointment.cancellationReason=body.reason
             await appointmentserviceRepository.save(appointment);
             ctx.body = {
                 code: 1,
                 msg: '取消成功',
-                data: appointment
+                //data: appointment
             };
         } else {
             ctx.body = {
@@ -106,7 +108,7 @@ router.get('/getappointmentList', async (ctx) => {
     }
 })
 
-//更新服务状态
+//更新服务
 router.post('/auditServices', async (ctx) => {
     let body = ctx.request.body;
     console.log(body)
@@ -195,6 +197,25 @@ router.post('/evaluationServices', async (ctx) => {
         data: res
     };
 });
+
+//获取全部信息
+router.get('/getAllInformation',async (ctx)=>{
+    let query = ctx.query
+    let res = await appointmentserviceRepository.findAndCount({
+        where:{
+            id:query.id
+        },
+        relations:['general','staff','feedback']
+    })
+    ctx.body={
+        code:1,
+        msg:'获取成功',
+        data:{
+            list: res[0],
+            total: res[1]
+        }
+    }
+})
 
 
 export const appointmentserviceRoutes = router.routes();
