@@ -128,7 +128,7 @@ router.get('/staffViewServiceList', async (ctx) => {
         where: {
             staff: { id: id }
         },
-        relations: ['general']
+        relations: ['general','feedback']
     })
     ctx.body = {
         code: 1,
@@ -216,6 +216,9 @@ router.get('/getAllInformation',async (ctx)=>{
         }
     }
 })
+
+
+
 
 
 export const appointmentserviceRoutes = router.routes();
