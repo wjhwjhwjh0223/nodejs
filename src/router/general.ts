@@ -2,10 +2,108 @@ import { General } from "../entity/General";
 import { Like } from 'typeorm'
 import Router from 'koa-router'
 import { AppDataSource } from '../config/data-source'
-
+import { HealthRecord } from '../entity/HealthRecord';
 let router = new Router()
 //老人列表里的增删改查
 let generalRepository = AppDataSource.getRepository(General)
+let healthRecordRepository = AppDataSource.getRepository(HealthRecord)
+
+//修改当前用户密码
+  router.post('/generalChangePassWord',async(ctx)=>{
+    let body=ctx.request.body
+    let res=await generalRepository.findOne({
+      where:{
+       id:body.id || '',
+       password:body.password || ''
+      }
+    })
+    console.log(res)
+    if(res){
+      ctx.body={
+        code:1,
+        msg:'有此用户',
+        data:res
+      }
+      let newPassWord=body.newPass
+      res.password = newPassWord;
+      await generalRepository.save(res);
+      ctx.body = {
+        code: 1,
+        msg: '密码修改成功',
+        data: res
+      };
+    }else{
+      ctx.body={
+        code:0,
+        msg:'密码错误'
+      }
+    }
+  })
+
+//获取当前用户的健康档案
+router.get('/getHealth', async(ctx)=>{
+  let query = ctx.query.generalId
+  let res = await healthRecordRepository.findOne({
+    where: {
+      general: { id: query }
+    },
+  })
+  ctx.body = {
+    code: 1,
+    msg: '查询成功',
+    data: res
+  }
+})
+
+//更新健康档案
+router.post('/updateHealth', async (ctx) => {
+  const body = ctx.request.body;
+
+  const general = await generalRepository.findOne({
+    where: {
+      id: body.generalId
+    }
+  });
+  if (!general) {
+    ctx.status = 404;
+    ctx.body = { code: 0, msg: '未找到对应的用户' };
+    return;
+  }
+
+  let health = await healthRecordRepository.findOne({ 
+    where: { general: { id: general.id } } 
+  });
+  
+  if (health) {
+    // 更新现有的健康档案
+    Object.assign(health, body);
+  } else {
+    // 创建新的健康档案实例
+    health = new HealthRecord({
+      ...body,
+      general: general
+    });
+  }
+
+  let res = await healthRecordRepository.save(health);
+  ctx.body = { code: 1, msg: '操作成功', data: res };
+});
+
+//单个id查询
+router.get('/general/:id', async (ctx) => {
+  let query = ctx.query
+  let res = await generalRepository.findOne({
+    where: {
+      id: query.id
+    },
+  })
+  ctx.body = {
+    code: 1,
+    msg: '查询成功',
+    data: res
+  }
+})
+
 //查询 
 router.get('/general', async (ctx) => {
   let query = ctx.query
@@ -16,8 +114,8 @@ router.get('/general', async (ctx) => {
     where: {
       name: Like(`${query.name}%`)
     },
-    order:{
-      utime:"DESC"
+    order: {
+      utime: "DESC"
     },
     skip: (pagenumber - 1) * pagesize,
     take: pagesize
@@ -48,6 +146,7 @@ router.post('/generalDelete', async (ctx) => {
 router.post('/generalUpdate', async (ctx) => {
   //1.接受参数
   let body = ctx.request.body
+  console.log(body)
   //2.根据参数构造数据
   let general = new General(body)
   let res = await generalRepository.save(general)
@@ -61,6 +160,7 @@ router.post('/generalUpdate', async (ctx) => {
 router.post('/generaAdd', async (ctx) => {
   //1.接受参数
   let body = ctx.request.body
+
   //2.根据参数构造数据
   let genera = new General(body)
   //3.通过user仓库来添加
@@ -78,7 +178,7 @@ router.post('/generalLogin', async (ctx) => {
   let body = ctx.request.body
   let res = await generalRepository.findOne({
     where: {
-      account:body.account,
+      account: body.account,
       password: body.password
     }
   })
@@ -95,5 +195,7 @@ router.post('/generalLogin', async (ctx) => {
     }
   }
 })
+
+
 
 export const generalRoutes = router.routes();

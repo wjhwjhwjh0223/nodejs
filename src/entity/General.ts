@@ -3,6 +3,7 @@ import { AppointmentService } from "./AppointmentService";
 import { Notification } from "./Notification";
 import { HealthRecord } from "./HealthRecord";
 import { ActivityGeneral } from "./ActivityGeneral";
+
 @Unique(["account"])
 @Entity()
 export class General {
@@ -55,11 +56,6 @@ export class General {
     })
     address:string
 
-    @JoinColumn()
-    @OneToOne(()=>HealthRecord,{
-        cascade:true
-    })
-    healthRecord:HealthRecord
 
     @Column({
         comment:'紧急联系人电话'
@@ -79,7 +75,7 @@ export class General {
     @OneToMany(()=>ActivityGeneral,activityGeneral=>activityGeneral.general)
     activityGeneral:ActivityGeneral[]
 
-   
+    
 
     //一个普通人员对应多个预约
     @OneToMany(()=>AppointmentService,appointment=>appointment.general,{

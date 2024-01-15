@@ -97,7 +97,7 @@ router.get('/getappointmentList', async (ctx) => {
     let res = await appointmentserviceRepository.findAndCount({
         relations: ['general']
     })
-    console.log(res)
+    //console.log(res)
     ctx.body = {
         code: 1,
         msg: '获取成功',
@@ -111,7 +111,7 @@ router.get('/getappointmentList', async (ctx) => {
 //更新服务
 router.post('/auditServices', async (ctx) => {
     let body = ctx.request.body;
-    console.log(body)
+    //console.log(body)
     let service = new AppointmentService(body)
     let res = await appointmentserviceRepository.save(service)
     ctx.body = {
@@ -145,7 +145,7 @@ router.get('/staffViewServiceList', async (ctx) => {
 //关闭服务
 router.post('/closeService', async (ctx) => {
     let body = ctx.request.body
-    console.log(body)
+    //console.log(body)
     let res = await appointmentserviceRepository.delete(body.id)
     ctx.body = {
         code: 1,
@@ -188,7 +188,7 @@ router.post('/evaluationServices', async (ctx) => {
     const res = await feedbackRepository.save(feedback)
     // console.log(res)
     appointmentService.feedback = res
-    console.log(appointmentService)
+    //console.log(appointmentService)
     const res1 = await appointmentserviceRepository.save(appointmentService)
     console.log(res1, '~~~~~~~~~~')
     ctx.body = {

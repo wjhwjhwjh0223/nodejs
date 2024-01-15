@@ -6,6 +6,54 @@ let router = new Router()
 //员工列表的增删改查
 let staffRepository = AppDataSource.getRepository(Staff)
 
+
+
+//修改当前用户密码
+router.post('/staffChangePassWord',async(ctx)=>{
+  let body=ctx.request.body
+  let res=await staffRepository.findOne({
+    where:{
+     id:body.id || '',
+     password:body.password || ''
+    }
+  })
+  console.log(res)
+  if(res){
+    ctx.body={
+      code:1,
+      msg:'有此用户',
+      data:res
+    }
+    let newPassWord=body.newPass
+    res.password = newPassWord;
+    await staffRepository.save(res);
+    ctx.body = {
+      code: 1,
+      msg: '密码修改成功',
+      data: res
+    };
+  }else{
+    ctx.body={
+      code:0,
+      msg:'密码错误'
+    }
+  }
+})
+
+//单个id查询
+router.get('/staff/:id', async (ctx) => {
+  let query = ctx.query
+  let res = await staffRepository.findOne({
+    where: {
+      id: query.id
+    },
+  })
+  ctx.body = {
+    code: 1,
+    msg: '查询成功',
+    data: res
+  }
+})
 //查询
 router.get('/staff', async (ctx) => {
     let query = ctx.query

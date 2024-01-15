@@ -1,40 +1,46 @@
 
-import {  PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Entity, JoinColumn,OneToOne} from "typeorm";
+import { PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Entity, JoinColumn, OneToOne } from "typeorm";
 
 import { General } from "./General";
 @Entity()
-export class HealthRecord{
-    @PrimaryGeneratedColumn({
-        comment: '主键,健康档案ID'
-    })
-    id: number;
+export class HealthRecord {
+  @PrimaryGeneratedColumn({
+    comment: '主键,健康档案ID'
+  })
+  id: number;
 
-    @Column({
-        comment:'健康信息',
-    })
-    health:string;
+  @Column({
+    comment: '健康信息',
+  })
+  health: string;
 
-    @Column({
-        comment:'病史详情'
-    })
-    medical:string
+  @Column({
+    comment: '病史详情'
+  })
+  medical: string
 
-    @CreateDateColumn()
-    ctime: Date;
+  @Column({
+    comment: '出生日期',
+    type: 'date'
+  })
+  dob: Date;
 
-    @UpdateDateColumn()
-    utime: Date;
+  @CreateDateColumn()
+  ctime: Date;
 
-    @JoinColumn()
-    @OneToOne(()=>General,{
-        cascade:true
-      })
-      general:General
-    
-    constructor(obj:any) {
-        if(obj) {
-          Object.assign(this, obj)
-        }
-      }
-  
+  @UpdateDateColumn()
+  utime: Date;
+
+  @JoinColumn()
+  @OneToOne(()=>General,{
+      cascade:true
+  })
+  general:General
+
+  constructor(obj: any) {
+    if (obj) {
+      Object.assign(this, obj)
+    }
+  }
+
 }
