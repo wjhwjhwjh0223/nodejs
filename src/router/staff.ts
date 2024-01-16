@@ -8,6 +8,16 @@ let staffRepository = AppDataSource.getRepository(Staff)
 
 
 
+//查询全部员工
+router.get('/staffList',async(ctx)=>{
+  let res=await staffRepository.find()
+  ctx.body={
+    code:1,
+    data:res,
+    msg:'查询成功'
+  }
+})
+
 //修改当前用户密码
 router.post('/staffChangePassWord',async(ctx)=>{
   let body=ctx.request.body

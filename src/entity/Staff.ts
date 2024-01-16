@@ -72,7 +72,7 @@ export class Staff{
         cascade:true
     })
     appointments:AppointmentService[]
-    //一个员工对赢多个活动
+    //一个员工对应多个活动
     @OneToMany(() => Activity, activity => activity.staff,{
         cascade:true
     })
@@ -86,7 +86,6 @@ export class Staff{
 
     //多个员工对应一个紧急事件
     @ManyToOne(()=>EmergencyResponse)
-    @JoinColumn()
     emergencyResponse:EmergencyResponse
 
     constructor(obj:Partial<Staff>) {

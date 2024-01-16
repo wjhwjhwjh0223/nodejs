@@ -8,40 +8,41 @@ let router = new Router()
 let generalRepository = AppDataSource.getRepository(General)
 let healthRecordRepository = AppDataSource.getRepository(HealthRecord)
 
+
 //修改当前用户密码
-  router.post('/generalChangePassWord',async(ctx)=>{
-    let body=ctx.request.body
-    let res=await generalRepository.findOne({
-      where:{
-       id:body.id || '',
-       password:body.password || ''
-      }
-    })
-    console.log(res)
-    if(res){
-      ctx.body={
-        code:1,
-        msg:'有此用户',
-        data:res
-      }
-      let newPassWord=body.newPass
-      res.password = newPassWord;
-      await generalRepository.save(res);
-      ctx.body = {
-        code: 1,
-        msg: '密码修改成功',
-        data: res
-      };
-    }else{
-      ctx.body={
-        code:0,
-        msg:'密码错误'
-      }
+router.post('/generalChangePassWord', async (ctx) => {
+  let body = ctx.request.body
+  let res = await generalRepository.findOne({
+    where: {
+      id: body.id || '',
+      password: body.password || ''
     }
   })
+  console.log(res)
+  if (res) {
+    ctx.body = {
+      code: 1,
+      msg: '有此用户',
+      data: res
+    }
+    let newPassWord = body.newPass
+    res.password = newPassWord;
+    await generalRepository.save(res);
+    ctx.body = {
+      code: 1,
+      msg: '密码修改成功',
+      data: res
+    };
+  } else {
+    ctx.body = {
+      code: 0,
+      msg: '密码错误'
+    }
+  }
+})
 
 //获取当前用户的健康档案
-router.get('/getHealth', async(ctx)=>{
+router.get('/getHealth', async (ctx) => {
   let query = ctx.query.generalId
   let res = await healthRecordRepository.findOne({
     where: {
@@ -70,10 +71,10 @@ router.post('/updateHealth', async (ctx) => {
     return;
   }
 
-  let health = await healthRecordRepository.findOne({ 
-    where: { general: { id: general.id } } 
+  let health = await healthRecordRepository.findOne({
+    where: { general: { id: general.id } }
   });
-  
+
   if (health) {
     // 更新现有的健康档案
     Object.assign(health, body);

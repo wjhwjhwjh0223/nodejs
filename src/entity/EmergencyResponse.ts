@@ -29,18 +29,23 @@ export class EmergencyResponse {
     })
     status: string;
 
+    @Column({
+        comment:'地点'
+    })
+    location: string;
+
     @CreateDateColumn({
         comment: '紧急事件报告时间'
     })
-    reportedAt: Date;
+    ctime: Date;
 
     @UpdateDateColumn({
         comment: '最后更新时间'
     })
-    updatedAt: Date;
+    utime: Date;
 
     //一个紧急事件对应多个工作人员
-   
+    @JoinColumn()
     @OneToMany(() => Staff, staff => staff.emergencyResponse, {
         cascade: true
     })
