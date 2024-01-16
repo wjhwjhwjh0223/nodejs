@@ -41,7 +41,7 @@ router.post('/staffChangePassWord',async(ctx)=>{
 })
 
 //单个id查询
-router.get('/staff/:id', async (ctx) => {
+router.get('/staff/id', async (ctx) => {
   let query = ctx.query
   let res = await staffRepository.findOne({
     where: {

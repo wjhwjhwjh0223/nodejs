@@ -90,7 +90,7 @@ router.post('/updateHealth', async (ctx) => {
 });
 
 //单个id查询
-router.get('/general/:id', async (ctx) => {
+router.get('/general/id', async (ctx) => {
   let query = ctx.query
   let res = await generalRepository.findOne({
     where: {
