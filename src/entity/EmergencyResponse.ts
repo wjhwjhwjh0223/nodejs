@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, JoinColumn, CreateDateColumn, UpdateDateColumn, OneToMany, OneToOne, ManyToOne } from "typeorm";
 import { Staff } from "./Staff"; // 引入工作人员实体
 import { General } from "./General";//引入普通用户实体
+import { join } from "path";
+import { StaffEmergency } from "./StaffEmergency";
 
 
 @Entity()
@@ -25,7 +27,8 @@ export class EmergencyResponse {
 
 
     @Column({
-        comment: '响应状态（如：待响应、处理中、已解决）'
+        comment: '响应状态（如：待响应、处理中、已解决）',
+        default:'待响应'
     })
     status: string;
 
@@ -44,19 +47,13 @@ export class EmergencyResponse {
     })
     utime: Date;
 
-    //一个紧急事件对应多个工作人员
-    @JoinColumn()
-    @OneToMany(() => Staff, staff => staff.emergencyResponse, {
-        cascade: true
-    })
-    staff: Staff[];
+    //多个紧急事件对应一个用户
+    @ManyToOne(()=>General)
+    general:General;
 
-    //一个紧急事件对应一个普通用户
-    @JoinColumn()
-    @OneToOne(()=>General,{
-        cascade:true
-    })
-    general: General;
+
+    @OneToMany(()=>StaffEmergency,staffEmergency=>staffEmergency.emergencyResponse)
+    staffEmergency:StaffEmergency[];
 
     constructor(obj: any) {
         if (obj) {

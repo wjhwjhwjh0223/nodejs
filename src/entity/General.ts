@@ -3,6 +3,7 @@ import { AppointmentService } from "./AppointmentService";
 import { Notification } from "./Notification";
 import { HealthRecord } from "./HealthRecord";
 import { ActivityGeneral } from "./ActivityGeneral";
+import { EmergencyResponse } from "./EmergencyResponse";
 
 @Unique(["account"])
 @Entity()
@@ -75,7 +76,11 @@ export class General {
     @OneToMany(()=>ActivityGeneral,activityGeneral=>activityGeneral.general)
     activityGeneral:ActivityGeneral[]
 
-    
+    //一个普通人员对应多个紧急事件
+    @OneToMany(()=>EmergencyResponse,emergencyResponse=>emergencyResponse.general,{
+        cascade:true
+    })
+    emergencyResponses: EmergencyResponse[]
 
     //一个普通人员对应多个预约
     @OneToMany(()=>AppointmentService,appointment=>appointment.general,{

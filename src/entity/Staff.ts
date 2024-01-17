@@ -4,6 +4,7 @@ import { AppointmentService } from "./AppointmentService";
 import { EmergencyResponse } from "./EmergencyResponse";
 import { Activity } from "./Activity";
 import { Feedback } from "./Feedback";
+import { StaffEmergency } from "./StaffEmergency";
 
 @Unique(["account"])
 @Entity()
@@ -64,6 +65,9 @@ export class Staff{
     @UpdateDateColumn()
     utime: Date;
 
+    @OneToMany(() => StaffEmergency, staffEmergency => staffEmergency.staff)
+    staffEmergency: StaffEmergency[];
+
     @ManyToMany(() => Notification)
     notifications: Notification[];
 
@@ -72,6 +76,7 @@ export class Staff{
         cascade:true
     })
     appointments:AppointmentService[]
+
     //一个员工对应多个活动
     @OneToMany(() => Activity, activity => activity.staff,{
         cascade:true
@@ -84,9 +89,6 @@ export class Staff{
     })
     feedbacks:Feedback[]
 
-    //多个员工对应一个紧急事件
-    @ManyToOne(()=>EmergencyResponse)
-    emergencyResponse:EmergencyResponse
 
     constructor(obj:Partial<Staff>) {
         if(obj) {
