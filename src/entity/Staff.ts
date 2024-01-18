@@ -90,7 +90,7 @@ export class Staff{
     feedbacks:Feedback[]
 
 
-    constructor(obj:Partial<Staff>) {
+    constructor(obj?:Partial<Staff>) {
         if(obj) {
           Object.assign(this, obj)
         }

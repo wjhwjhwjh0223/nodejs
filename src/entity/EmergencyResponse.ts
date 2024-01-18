@@ -9,19 +9,19 @@ import { StaffEmergency } from "./StaffEmergency";
 export class EmergencyResponse {
 
     @PrimaryGeneratedColumn({
-        comment: '主键，紧急响应ID'
+        comment: '主键,紧急响应ID'
     })
     id: number;
 
 
     @Column({
-        type: "text",
-        comment: '紧急事件详情'
+        comment: '紧急事件详情',
     })
     details: string;
 
     @Column({
-        comment: '紧急事件类型，例如：医疗紧急情况、安全事件等'
+        comment: '紧急事件类型，例如：医疗紧急情况、安全事件等',
+        
     })
     type: string;
 
@@ -33,9 +33,15 @@ export class EmergencyResponse {
     status: string;
 
     @Column({
-        comment:'地点'
+        comment:'地点',
     })
     location: string;
+
+    @Column({
+        comment: '流程',
+        default:''
+    })
+    flow:string
 
     @CreateDateColumn({
         comment: '紧急事件报告时间'
@@ -54,8 +60,9 @@ export class EmergencyResponse {
 
     @OneToMany(()=>StaffEmergency,staffEmergency=>staffEmergency.emergencyResponse)
     staffEmergency:StaffEmergency[];
+    emergencyResponse: any;
 
-    constructor(obj: any) {
+    constructor(obj?: any) {
         if (obj) {
             Object.assign(this, obj);
         }

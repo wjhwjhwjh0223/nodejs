@@ -10,13 +10,6 @@ export class StaffEmergency{
     })
     id: number;
 
-    @Column({
-        comment: '数量',
-        type: 'int'
-    })
-    num: number
-
-
     @ManyToOne(() => Staff, staff => staff.staffEmergency,{
         cascade:true
     })
@@ -26,6 +19,13 @@ export class StaffEmergency{
         cascade:true
     })
     emergencyResponse: EmergencyResponse;
+
+    
+    constructor(obj?: any) {
+        if (obj) {
+            Object.assign(this, obj);
+        }
+    }
  
 
 }
