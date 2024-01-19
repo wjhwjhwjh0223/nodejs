@@ -39,7 +39,7 @@ export class EmergencyResponse {
 
     @Column({
         comment: '流程',
-        default:''
+        type:'text',
     })
     flow:string
 
