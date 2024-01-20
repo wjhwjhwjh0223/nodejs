@@ -33,6 +33,11 @@ export class Activity {
         comment: '活动地点'
     })
     location: string;
+    
+    @Column({
+        comment:"图片地址",
+    })
+    avatar:string
 
     @ManyToOne(() => Staff, staff => staff.activities)
     @JoinColumn({ name: "staffId" }) // 在Activity表中创建一个staffId的外键列

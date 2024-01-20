@@ -177,6 +177,7 @@ router.post('/generaAdd', async (ctx) => {
 //老人登录页面
 router.post('/generalLogin', async (ctx) => {
   let body = ctx.request.body
+  console.log(body)
   let res = await generalRepository.findOne({
     where: {
       account: body.account,
