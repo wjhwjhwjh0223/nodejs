@@ -9,6 +9,29 @@ let generalRepository = AppDataSource.getRepository(General)
 let healthRecordRepository = AppDataSource.getRepository(HealthRecord)
 
 
+//根据微信名来登录
+router.post('/generalWXLogin', async (ctx) => {
+  let body = ctx.request.body
+  let vxname = body.vxname
+  console.log(body)
+  let res = await generalRepository.findOne({
+    where: {
+      vxname: vxname
+    }
+  })
+  if (res) {
+    ctx.body = {
+      code: 1,
+      msg: '登录成功',
+      data: res
+    }
+  } else {
+    ctx.body = {
+      code: 0,
+      msg: '登陆失败,密码或账号错误'
+    }
+  }
+})
 //修改当前用户密码
 router.post('/generalChangePassWord', async (ctx) => {
   let body = ctx.request.body
@@ -52,6 +75,20 @@ router.get('/getHealth', async (ctx) => {
   ctx.body = {
     code: 1,
     msg: '查询成功',
+    data: res
+  }
+})
+
+//小程序更新健康档案
+router.post('/updataHealthRecord', async (ctx) => {
+  let body = ctx.request.body
+  console.log(body)
+  //2.根据参数构造数据
+  let health = new HealthRecord(body)
+  let res = await healthRecordRepository.save(health)
+  ctx.body = {
+    code: 1,
+    msg: '更新成功',
     data: res
   }
 })

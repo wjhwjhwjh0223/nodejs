@@ -20,6 +20,10 @@ export class User {
     })
     password: string;
 
+    @Column({
+        comment:'管理员',
+    })
+    name: string;
     
     @CreateDateColumn()
     ctime: Date;

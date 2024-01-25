@@ -8,6 +8,23 @@ let router = new Router()
 let activityRepository = AppDataSource.getRepository(Activity)
 let staffRepository = AppDataSource.getRepository(Staff)
 let activityGeneralRepository = AppDataSource.getRepository(ActivityGeneral)
+
+//查询这一个活动
+router.get('/activity/activityID', async(ctx)=>{
+    let query = ctx.query
+    let res = await activityRepository.findOne({
+        where:{
+            id:query.id
+        },
+        relations:['staff','activityGeneral']
+    })
+    ctx.body = {
+        code: 1,
+        msg: '获取成功',
+        data: res
+    }
+})
+
 //活动创建
 router.post('/activitycreat', async (ctx) => {
     let body = ctx.request.body
@@ -94,13 +111,33 @@ router.post('/participate-activity', async (ctx) => {
 
     ctx.body = { code: 1, msg: '活动参加成功！' };
 });
+//小程序查询个人参加的活动列表
+// router.get('/general/activity', async (ctx) => {
+//     const body = ctx.query
+//     console.log(body)
+//     const res = await activityGeneralRepository.findAndCount({
+//         where: {
+//             general: { id:body.generalId } 
+//         },
+//         relations: ['activity', 'general']
+//     })
+//     ctx.body = {
+//         code: 1,
+//         msg: '获取成功',
+//         data: {
+//             list: res[0],
+//             total: res[1]
+//         }
+//     }
+// })
 
 //查询个人参加的活动列表
 router.get('/user/activity', async (ctx) => {
-    const id = ctx.query.id
+    const body= ctx.query
+    //console.log(body)
     const res = await activityGeneralRepository.findAndCount({
         where: {
-            general: { id:id } 
+            general: { id:body.id } 
         },
         relations: ['activity', 'general']
     })
@@ -117,6 +154,7 @@ router.get('/user/activity', async (ctx) => {
 //退出活动
 router.post('/activityExit' ,async(ctx)=>{
     let body = ctx.request.body
+    console.log(body)
     let res = await activityGeneralRepository.findOne({
         where: { 
             general: { id: body.generalId },

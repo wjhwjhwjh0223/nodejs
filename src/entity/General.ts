@@ -63,6 +63,11 @@ export class General {
     })
     contacts:number
 
+    @Column({
+        comment:'微信名'
+    })
+    vxname:string
+
     @CreateDateColumn()
     ctime: Date;
 

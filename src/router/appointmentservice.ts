@@ -12,7 +12,7 @@ let feedbackRepository = AppDataSource.getRepository(Feedback)
 //预约服务创建
 router.post('/appointmentServiceCreation', async (ctx) => {
     let body = ctx.request.body
-    console.log(body, '~~~~~~~~~~~~~')
+    //console.log(body, '~~~~~~~~~~~~~')
     let appointmentserviceData = { ...body }
     let appointmentservice = await generalRepository.findOne({
         where: {
@@ -33,6 +33,7 @@ router.post('/appointmentServiceCreation', async (ctx) => {
 //获取用户预约服务列表
 router.get('/getAListOfPersonalAppointmentServices', async (ctx) => {
     const id = ctx.query.id
+    //console.log(id, '~~~~~~~~~~')
     const res = await appointmentserviceRepository.findAndCount({
         where: {
             general: { id: id }
@@ -58,7 +59,7 @@ router.get('/getAListOfPersonalAppointmentServices', async (ctx) => {
 // 取消预约
 router.post('/cancelReservationService', async (ctx) => {
     let body = ctx.request.body;
-    console.log(body)
+    //console.log(body)
     try {
         // 根据ID查找预约服务
         let appointment = await appointmentserviceRepository.findOne({
