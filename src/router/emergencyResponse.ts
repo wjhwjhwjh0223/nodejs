@@ -17,6 +17,7 @@ let staffEmergencyRepository = AppDataSource.getRepository('StaffEmergency')
 //获取这个事件的工作人员信息
 router.get('/emergencyStaff',async(ctx)=>{
     let body = ctx.query
+    console.log(body)
     const res = await staffEmergencyRepository.find({
         where: {
             emergencyResponse: {
@@ -181,7 +182,7 @@ router.post('/addEmergency', async (ctx) => {
 //查看自己的紧急求助服务
 router.get('/emergencyList/generalId', async (ctx) => {
     let body = ctx.query;
-    console.log(body)
+    //console.log(body)
     let res = await emergencyResponseRepository.findAndCount({
         where: {
             general: {
@@ -197,6 +198,22 @@ router.get('/emergencyList/generalId', async (ctx) => {
             list: res[0],
             total: res[1]
         }
+    }
+})
+
+//通过id查紧急服务
+router.get('/emergencyDetail',async(ctx)=>{
+    let body = ctx.query;
+    let res = await emergencyResponseRepository.findOne({
+        where:{
+            id:body.id
+        },
+        relations:['general']
+    })
+    ctx.body = {
+        code: 1,
+        msg: '获取成功',
+        data: res
     }
 })
 

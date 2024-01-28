@@ -9,6 +9,18 @@ let generalRepository = AppDataSource.getRepository(General)
 let healthRecordRepository = AppDataSource.getRepository(HealthRecord)
 
 
+//查询全部老人
+router.get('/allGeneral',async(ctx)=>{
+  // let query = ctx.query
+  let res = await generalRepository.find()
+  ctx.body = {
+    code: 1,
+    msg: '查询成功',
+    data: res
+  }
+})
+
+
 //根据微信名来登录
 router.post('/generalWXLogin', async (ctx) => {
   let body = ctx.request.body
