@@ -7,3 +7,4 @@ Steps to run this project:
 3. Run `npm start` command
 
 这是我的毕业设计基于Vue和Nodejs的社区养老服务平台设计与实现的后端node代码
+运行sql文件即可
