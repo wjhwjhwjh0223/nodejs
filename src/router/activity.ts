@@ -9,6 +9,22 @@ let activityRepository = AppDataSource.getRepository(Activity)
 let staffRepository = AppDataSource.getRepository(Staff)
 let activityGeneralRepository = AppDataSource.getRepository(ActivityGeneral)
 
+
+//wx小程序获取全部活动
+router.get('/wxGetactivityList', async (ctx) => {
+    let res = await activityRepository.findAndCount({
+        relations: ['staff'],
+    })
+    ctx.body = {
+        code: 1,
+        msg: '获取成功',
+        data: {
+            list: res[0],
+            total: res[1]
+        }
+    }
+})
+
 //查询这一个活动
 router.get('/activity/activityID', async(ctx)=>{
     let query = ctx.query
@@ -28,14 +44,13 @@ router.get('/activity/activityID', async(ctx)=>{
 //活动创建
 router.post('/activitycreat', async (ctx) => {
     let body = ctx.request.body
-    console.log(body)
     let activityData = { ...body }
     let staff = await staffRepository.findOne({
         where: {
             id: body.staffId
         },
     })
-    console.log(staff)
+    //console.log(staff)
     activityData.staff = staff;
     let activity = new Activity(activityData)
     let res = await activityRepository.save(activity)
@@ -49,9 +64,13 @@ router.post('/activitycreat', async (ctx) => {
 //获取活动列表
 router.get('/getactivityList', async (ctx) => {
     let query = ctx.query
+    //console.log(query)
     let pagenumber = query.pagenumber || 1
     let pagesize = query.pagesize || 10
     let res = await activityRepository.findAndCount({
+        where: {
+            activityType: Like(`${query.activityType}%`)
+        },
         relations: ['staff'],
         skip: (pagenumber - 1) * pagesize,
         take: pagesize
@@ -66,9 +85,11 @@ router.get('/getactivityList', async (ctx) => {
     }
 })
 
+
 //修改活动状态
 router.post('/updateActivityStauts', async (ctx) => {
     let body = ctx.request.body
+    console.log(body)
     let activity = new Activity(body)
     let res = await activityRepository.save(activity)
     ctx.body = {
@@ -82,7 +103,7 @@ router.post('/updateActivityStauts', async (ctx) => {
 router.post('/participate-activity', async (ctx) => {
     const userId = ctx.request.body.userId;
     const activityId = ctx.request.body.activityId;
-    console.log(userId, activityId, '~~~~~')
+    //.log(userId, activityId, '~~~~~')
     
     // 检查用户是否已经参加了活动
     const existingParticipation = await activityGeneralRepository.findOne({
@@ -95,7 +116,7 @@ router.post('/participate-activity', async (ctx) => {
             } 
         }
     });
-    console.log(existingParticipation)
+    //console.log(existingParticipation)
     if (existingParticipation) {
         ctx.body = { code: 0, msg: '您已经参加了这个活动。' };
         return;
@@ -111,25 +132,6 @@ router.post('/participate-activity', async (ctx) => {
 
     ctx.body = { code: 1, msg: '活动参加成功！' };
 });
-//小程序查询个人参加的活动列表
-// router.get('/general/activity', async (ctx) => {
-//     const body = ctx.query
-//     console.log(body)
-//     const res = await activityGeneralRepository.findAndCount({
-//         where: {
-//             general: { id:body.generalId } 
-//         },
-//         relations: ['activity', 'general']
-//     })
-//     ctx.body = {
-//         code: 1,
-//         msg: '获取成功',
-//         data: {
-//             list: res[0],
-//             total: res[1]
-//         }
-//     }
-// })
 
 //查询个人参加的活动列表
 router.get('/user/activity', async (ctx) => {
@@ -154,14 +156,14 @@ router.get('/user/activity', async (ctx) => {
 //退出活动
 router.post('/activityExit' ,async(ctx)=>{
     let body = ctx.request.body
-    console.log(body)
+    //console.log(body)
     let res = await activityGeneralRepository.findOne({
         where: { 
             general: { id: body.generalId },
             activity: { id: body.activityId }
           }
     })
-    console.log(res)
+    //console.log(res)
     let res1 = await activityGeneralRepository.delete(res.id)
     ctx.body = {
         code: 1,
@@ -173,14 +175,14 @@ router.post('/activityExit' ,async(ctx)=>{
 //获取参加活动的名单
 router.get('/obtainTheListOfParticipantsInTheEvent',async(ctx)=>{
     let query = ctx.query
-    console.log(query)
+    //console.log(query)
     let res = await activityGeneralRepository.findAndCount({
         where:{
             activity: { id: query.activityId }
         },
         relations:['general']
     })
-    console.log(res)
+    //console.log(res)
     ctx.body={
         code:1,
         msg:'获取成功',

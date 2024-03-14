@@ -5,6 +5,7 @@ import { General } from '../entity/General'
 import { Feedback } from '../entity/Feedback'
 import { relative } from 'path'
 import { Staff } from '../entity/Staff'
+import { Like } from 'typeorm';
 let router = new Router()
 let appointmentserviceRepository = AppDataSource.getRepository(AppointmentService)
 let generalRepository = AppDataSource.getRepository(General)
@@ -19,7 +20,7 @@ router.post('/appointmentServiceCreation', async (ctx) => {
             id: body.generalId
         }
     })
-    console.log(appointmentservice)
+    //console.log(appointmentservice)
     appointmentserviceData.general = appointmentservice
     let appointmentservice1 = new AppointmentService(appointmentserviceData)
     let res = await appointmentserviceRepository.save(appointmentservice1)
@@ -30,8 +31,8 @@ router.post('/appointmentServiceCreation', async (ctx) => {
     }
 })
 
-//获取用户预约服务列表
-router.get('/getAListOfPersonalAppointmentServices', async (ctx) => {
+//wx小程序获取用户预约服务列表
+router.get('/wxGetAListOfPersonalAppointmentServices', async (ctx) => {
     const id = ctx.query.id
     //console.log(id, '~~~~~~~~~~')
     const res = await appointmentserviceRepository.findAndCount({
@@ -39,6 +40,41 @@ router.get('/getAListOfPersonalAppointmentServices', async (ctx) => {
             general: { id: id }
         },
         relations: ['general', 'staff','feedback']
+    })
+    const listWithFeedbackStatus = res[0].map(appointment => {
+        return {
+            ...appointment,
+            hasFeedback: !!appointment.feedback
+        };
+    });
+    ctx.body = {
+        code: 1,
+        msg: '获取成功',
+        data: {
+            list: listWithFeedbackStatus,
+            total: res[1]
+        }
+    }
+})
+
+//获取用户预约服务列表
+router.get('/getAListOfPersonalAppointmentServices', async (ctx) => {
+    const query = ctx.query
+    const id = ctx.query.id
+    let pagenumber = query.pagenumber || 1
+    let pagesize = query.pagesize || 10
+    //console.log(id, '~~~~~~~~~~')
+    const res = await appointmentserviceRepository.findAndCount({
+        where: {
+            general: { id: id },
+            serviceType: Like(`${query.serviceType}%`)
+        },
+        order: {
+            appointmentTime: "asc"
+          },
+        relations: ['general', 'staff', 'feedback'],
+        skip: (pagenumber - 1) * pagesize,
+        take: pagesize
     })
     const listWithFeedbackStatus = res[0].map(appointment => {
         return {
@@ -69,7 +105,7 @@ router.post('/cancelReservationService', async (ctx) => {
         if (appointment) {
             // 更新预约状态为已取消
             appointment.status = '已取消';
-            appointment.cancellationReason=body.reason
+            appointment.cancellationReason = body.reason
             await appointmentserviceRepository.save(appointment);
             ctx.body = {
                 code: 1,
@@ -94,9 +130,19 @@ router.post('/cancelReservationService', async (ctx) => {
 //获取审核列表
 router.get('/getappointmentList', async (ctx) => {
     let query = ctx.query
-    console.log(query)
+    //console.log(query)
+    let pagenumber = query.pagenumber || 1
+    let pagesize = query.pagesize || 10
     let res = await appointmentserviceRepository.findAndCount({
-        relations: ['general']
+        where: {
+            serviceType: Like(`${query.serviceType}%`)
+        },
+        order: {
+            appointmentTime: "DESC"
+          },
+        relations: ['general'],
+        skip: (pagenumber - 1) * pagesize,
+        take: pagesize
     })
     //console.log(res)
     ctx.body = {
@@ -129,7 +175,7 @@ router.get('/staffViewServiceList', async (ctx) => {
         where: {
             staff: { id: id }
         },
-        relations: ['general','feedback']
+        relations: ['general', 'feedback']
     })
     ctx.body = {
         code: 1,
@@ -159,7 +205,7 @@ router.post('/closeService', async (ctx) => {
 
 //评价预约服务
 router.post('/evaluationServices', async (ctx) => {
-     let body = ctx.request.body;
+    let body = ctx.request.body;
     // 掐断的数据
     // const body = {
     //     staffId: 1,
@@ -169,7 +215,7 @@ router.post('/evaluationServices', async (ctx) => {
     //         comment: '服务非常棒！'
     //     }
     // }
-    console.log(body)
+    //console.log(body)
     // 构建用户
     const staff = new Staff({
         id: body.staffId
@@ -177,7 +223,7 @@ router.post('/evaluationServices', async (ctx) => {
     // 构建服务
     const appointmentService = new AppointmentService({
         id: body.appointmentServiceId,
-        status:"已评价"
+        status: "已评价"
     })
 
     // 构建评价
@@ -191,7 +237,7 @@ router.post('/evaluationServices', async (ctx) => {
     appointmentService.feedback = res
     //console.log(appointmentService)
     const res1 = await appointmentserviceRepository.save(appointmentService)
-    console.log(res1, '~~~~~~~~~~')
+    //console.log(res1, '~~~~~~~~~~')
     ctx.body = {
         code: 1,
         msg: '评价成功',
@@ -199,26 +245,48 @@ router.post('/evaluationServices', async (ctx) => {
     };
 });
 
+// router.get('/查询单个服务')
+
 //获取全部信息
-router.get('/getAllInformation',async (ctx)=>{
+router.get('/getAllInformation', async (ctx) => {
     let query = ctx.query
+    //console.log(query)
+    let pagenumber = query.pagenumber || 1
+    let pagesize = query.pagesize || 10
     let res = await appointmentserviceRepository.findAndCount({
-        where:{
-            id:query.id
+        where: {
+            serviceType: Like(`${query.serviceType}%`)
         },
-        relations:['general','staff','feedback']
+        relations: ['general', 'staff', 'feedback'],
+        skip: (pagenumber - 1) * pagesize,
+        take: pagesize
     })
-    ctx.body={
-        code:1,
-        msg:'获取成功',
-        data:{
+    ctx.body = {
+        code: 1,
+        msg: '获取成功',
+        data: {
             list: res[0],
             total: res[1]
         }
     }
 })
 
-
+//获取全部信息
+router.get('/getAllInformations', async (ctx) => {
+    let query = ctx.query
+    console.log(query)
+    let res = await appointmentserviceRepository.findAndCount({
+        relations: ['general', 'staff', 'feedback'],
+    })
+    ctx.body = {
+        code: 1,
+        msg: '获取成功',
+        data: {
+            list: res[0],
+            total: res[1]
+        }
+    }
+})
 
 
 

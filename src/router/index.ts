@@ -6,7 +6,10 @@ import {userRoutes} from './user'
 import {activityRoutes} from './activity'
 import {appointmentserviceRoutes} from './appointmentservice'
 import {emergencyResponseRoutes} from './emergencyResponse'
+import { captchaRoutes } from './captcha';
 const router = new Router()
+
+router.use(captchaRoutes);
 router.use(staffRoutes)
 router.use(generalRoutes)
 router.use(fileRoutes)

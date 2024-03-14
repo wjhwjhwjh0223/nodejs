@@ -5,6 +5,16 @@ import { AppDataSource } from '../config/data-source'
 let router = new Router()
 //员工列表的增删改查
 let staffRepository = AppDataSource.getRepository(Staff)
+// 验证码校验函数
+function checkCaptcha(ctx, captchaFromUser) {
+  // 将用户输入的验证码和会话中的验证码都转换为小写，然后进行比较
+  if (captchaFromUser.toLowerCase() !== ctx.session.captcha.toLowerCase()) {
+    ctx.body = { code: 0, msg: '验证码错误' };
+    return false; // 验证失败
+  }
+  return true; // 验证成功
+}
+
 
 
 
@@ -27,7 +37,7 @@ router.post('/staffChangePassWord',async(ctx)=>{
      password:body.password || ''
     }
   })
-  console.log(res)
+  //console.log(res)
   if(res){
     ctx.body={
       code:1,
@@ -53,6 +63,7 @@ router.post('/staffChangePassWord',async(ctx)=>{
 //单个id查询
 router.get('/staff/id', async (ctx) => {
   let query = ctx.query
+  //console.log(query,'aaa')
   let res = await staffRepository.findOne({
     where: {
       id: query.id
@@ -67,7 +78,7 @@ router.get('/staff/id', async (ctx) => {
 //查询
 router.get('/staff', async (ctx) => {
     let query = ctx.query
-    console.log(query)
+    //console.log(query)
      let pagenumber = query.pagenumber || 1
     let pagesize = query.pagesize || 10
     let res = await staffRepository.findAndCount({
@@ -80,7 +91,7 @@ router.get('/staff', async (ctx) => {
         skip: (pagenumber - 1) * pagesize,
         take: pagesize
     })
-    console.log(res)
+    //console.log(res)
     ctx.body = {
         code: 1,
         data: {
@@ -92,7 +103,7 @@ router.get('/staff', async (ctx) => {
 //删除
 router.post('/staffDelete', async (ctx) => {
     let body = ctx.request.body
-    console.log(body)
+    //console.log(body)
     let res = await staffRepository.delete(body.id)
     ctx.body = {
         code: 1,
@@ -134,6 +145,10 @@ router.post('/staffUpdate', async (ctx) => {
   //工作人员登录
   router.post('/staffLogin',async(ctx)=>{
     let body = ctx.request.body
+      // 验证验证码
+      if (!checkCaptcha(ctx, body.captcha)) {
+        return; // 如果验证码校验失败，提前返回
+      }
     let res =await staffRepository.findOne({
       where:{
         account:body.account,

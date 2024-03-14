@@ -61,10 +61,11 @@ export class General {
     @Column({
         comment:'紧急联系人电话'
     })
-    contacts:number
+    contacts:string
 
     @Column({
-        comment:'微信名'
+        comment:'微信名',
+        nullable: true
     })
     vxname:string
 

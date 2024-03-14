@@ -25,6 +25,12 @@ export class User {
     })
     name: string;
     
+    @Column({
+        comment:"图片地址",
+    })
+    avatar:string
+
+
     @CreateDateColumn()
     ctime: Date;
   

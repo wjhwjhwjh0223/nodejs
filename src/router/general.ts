@@ -3,14 +3,25 @@ import { Like } from 'typeorm'
 import Router from 'koa-router'
 import { AppDataSource } from '../config/data-source'
 import { HealthRecord } from '../entity/HealthRecord';
+const svgCaptcha = require('svg-captcha');
 let router = new Router()
+
+function checkCaptcha(ctx, captchaFromUser) {
+  // 将用户输入的验证码和会话中的验证码都转换为小写，然后进行比较
+  if (captchaFromUser.toLowerCase() !== ctx.session.captcha.toLowerCase()) {
+    ctx.body = { code: 0, msg: '验证码错误' };
+    return false; // 验证失败
+  }
+  return true; // 验证成功
+}
+
 //老人列表里的增删改查
 let generalRepository = AppDataSource.getRepository(General)
 let healthRecordRepository = AppDataSource.getRepository(HealthRecord)
 
 
 //查询全部老人
-router.get('/allGeneral',async(ctx)=>{
+router.get('/allGeneral', async (ctx) => {
   // let query = ctx.query
   let res = await generalRepository.find()
   ctx.body = {
@@ -25,7 +36,7 @@ router.get('/allGeneral',async(ctx)=>{
 router.post('/generalWXLogin', async (ctx) => {
   let body = ctx.request.body
   let vxname = body.vxname
-  console.log(body)
+  //console.log(body)
   let res = await generalRepository.findOne({
     where: {
       vxname: vxname
@@ -53,7 +64,7 @@ router.post('/generalChangePassWord', async (ctx) => {
       password: body.password || ''
     }
   })
-  console.log(res)
+  //console.log(res)
   if (res) {
     ctx.body = {
       code: 1,
@@ -91,10 +102,11 @@ router.get('/getHealth', async (ctx) => {
   }
 })
 
+
 //小程序更新健康档案
 router.post('/updataHealthRecord', async (ctx) => {
   let body = ctx.request.body
-  console.log(body)
+  //console.log(body)
   //2.根据参数构造数据
   let health = new HealthRecord(body)
   let res = await healthRecordRepository.save(health)
@@ -157,7 +169,8 @@ router.get('/general/id', async (ctx) => {
 //查询 
 router.get('/general', async (ctx) => {
   let query = ctx.query
-  console.log(query)
+  
+  //console.log(query)
   let pagenumber = query.pagenumber || 1
   let pagesize = query.pagesize || 10
   let res = await generalRepository.findAndCount({
@@ -171,7 +184,7 @@ router.get('/general', async (ctx) => {
     take: pagesize
   }
   )
-  console.log(res)
+  //console.log(res)
   ctx.body = {
     code: 1,
     data: {
@@ -183,20 +196,20 @@ router.get('/general', async (ctx) => {
 
 router.post('/generalDelete', async (ctx) => {
   let body = ctx.request.body
-  console.log(body)
+  //console.log(body)
   let res = await generalRepository.delete(body.id)
   ctx.body = {
     code: 1,
     msg: '删除成功',
     data: res
   }
-  console.log(res)
+  //console.log(res)
 })
 
 router.post('/generalUpdate', async (ctx) => {
   //1.接受参数
   let body = ctx.request.body
-  console.log(body)
+  //console.log(body)
   //2.根据参数构造数据
   let general = new General(body)
   let res = await generalRepository.save(general)
@@ -210,7 +223,7 @@ router.post('/generalUpdate', async (ctx) => {
 router.post('/generaAdd', async (ctx) => {
   //1.接受参数
   let body = ctx.request.body
-
+  console.log(body)
   //2.根据参数构造数据
   let genera = new General(body)
   //3.通过user仓库来添加
@@ -225,27 +238,32 @@ router.post('/generaAdd', async (ctx) => {
 
 //老人登录页面
 router.post('/generalLogin', async (ctx) => {
-  let body = ctx.request.body
-  console.log(body)
+  let body = ctx.request.body;
+
+  if (!checkCaptcha(ctx, body.captcha)) {
+    return; // 如果验证码校验失败，提前返回
+  }
+  // 登录验证逻辑
   let res = await generalRepository.findOne({
     where: {
       account: body.account,
       password: body.password
     }
-  })
+  });
+
   if (res) {
     ctx.body = {
       code: 1,
       msg: '登录成功',
       data: res
-    }
+    };
   } else {
     ctx.body = {
       code: 0,
-      msg: '登陆失败,密码或账号错误'
-    }
+      msg: '登录失败，密码或账号错误'
+    };
   }
-})
+});
 
 
 

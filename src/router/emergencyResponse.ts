@@ -17,7 +17,7 @@ let staffEmergencyRepository = AppDataSource.getRepository('StaffEmergency')
 //获取这个事件的工作人员信息
 router.get('/emergencyStaff',async(ctx)=>{
     let body = ctx.query
-    console.log(body)
+    //console.log(body)
     const res = await staffEmergencyRepository.find({
         where: {
             emergencyResponse: {
@@ -75,7 +75,7 @@ router.post('/completeEmergencyEvents',async(ctx)=>{
 //工作人员前往紧急时间地点
 router.post('/toEmergencyStaffLocation', async (ctx) => {
     const body = ctx.request.body
-    console.log(body)
+    //console.log(body)
     // 从数据库中查询相关的Staff对象
     // const staffsId = await staffEmergencyRepository.findByIds(body.emergencyResponse.id) as Staff[]
         const staffsId = await staffEmergencyRepository.find({
@@ -96,7 +96,7 @@ router.post('/toEmergencyStaffLocation', async (ctx) => {
             id:body.emergencyResponse.id
         }
     })
-    console.log(emergencyResponse)
+    //console.log(emergencyResponse)
     emergencyResponse.status = '已前往',
     emergencyResponse.flow = emergencyResponse.flow + `${staffNames}正在前往紧急地点${emergencyResponse.location}/ 时间: ${dayjs().format('YYYY-MM-DD HH:mm:ss')}.`
     
@@ -134,7 +134,7 @@ router.get('/emergencyStaffList', async (ctx) => {
 router.post('/addEmergency', async (ctx) => {
     try {
         let body = ctx.request.body;
-        console.log(body);
+        //console.log(body);
         // 得到老人对象
         const general = await generalRepository.findOneBy({ id: body.generalId });
         if (!general) {
@@ -173,7 +173,7 @@ router.post('/addEmergency', async (ctx) => {
             data: res
         };
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         ctx.status = 500;
         ctx.body = { success: false, message: 'Internal Server Error' };
     }
